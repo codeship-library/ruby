@@ -16,19 +16,17 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 ENV RUBY_MAJOR 2.2
 ENV RUBY_VERSION 2.2.3
+RUN echo 'install: --no-doc --no-ri\nupdate: --no-doc --no-ri' >> "$HOME/.gemrc"
 
-RUN echo 'gem: --no-document' >> /.gemrc
+RUN mkdir -p /tmp/ruby && \
+  cd /tmp/ruby && \
+  curl -L "http://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.bz2" | \
+    tar -xjC /tmp/ruby --strip-components=1 && \
+  ./configure --disable-install-doc && \
+  nice make -j && \
+  make install && \
+  gem update --system && \
+  rm -r /tmp/ruby
 
-RUN mkdir -p /tmp/ruby \
-  && curl -L "http://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.bz2" \
-      | tar -xjC /tmp/ruby --strip-components=1 \
-  && cd /tmp/ruby \
-  && ./configure --disable-install-doc \
-
-RUN make \
-  && make install \
-  && gem update --system \
-  && rm -r /tmp/ruby
-
-RUN gem install --no-document bundler
+RUN gem install bundler
 
