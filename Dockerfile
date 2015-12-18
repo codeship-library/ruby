@@ -15,7 +15,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 ENV RUBY_MAJOR 2.2
-ENV RUBY_VERSION 2.2.3
+ENV RUBY_VERSION 2.2.4
 RUN echo 'install: --no-doc --no-ri\nupdate: --no-doc --no-ri' >> "$HOME/.gemrc"
 
 RUN mkdir -p /tmp/ruby && \
